@@ -1,4 +1,4 @@
-package com.kunlun.web;
+package com.kunlun.api;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
