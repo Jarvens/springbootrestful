@@ -7,6 +7,7 @@ import org.n3r.diamond.sdk.DiamondSDK;
 import org.n3r.diamond.sdk.domain.DiamondConf;
 import org.n3r.diamond.sdk.domain.DiamondSDKConf;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -55,4 +56,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         converters.add(converter);
         super.configureMessageConverters(converters);
     }
+
+
 }

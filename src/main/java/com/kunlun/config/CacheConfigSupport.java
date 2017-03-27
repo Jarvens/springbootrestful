@@ -8,8 +8,11 @@ import org.n3r.diamond.client.Miner;
 import org.n3r.diamond.client.Minerable;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -20,6 +23,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Created by kunlun on 2017/3/24.
@@ -48,6 +52,7 @@ public class CacheConfigSupport extends CachingConfigurerSupport implements Seri
 
     /**
      * 序列化对象
+     *
      * @param redisConnectionFactory
      * @return
      */
@@ -66,6 +71,7 @@ public class CacheConfigSupport extends CachingConfigurerSupport implements Seri
 
     /**
      * 缓存支持
+     *
      * @param redisTemplate
      * @return
      */
@@ -74,5 +80,39 @@ public class CacheConfigSupport extends CachingConfigurerSupport implements Seri
         RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
         redisCacheManager.setDefaultExpiration(7200);  //Set the default expire time  (second)
         return redisCacheManager;
+    }
+
+    @Bean
+    public KeyGenerator cacheKeyGenerator() {
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                StringBuilder sb = new StringBuilder();
+
+                Cacheable cacheable = method.getAnnotation(Cacheable.class);
+                if (cacheable != null) {
+                    String[] values = cacheable.value();
+                    if (values != null && values.length > 0) {
+                        sb.append(values[0]);
+                    }
+                }
+
+                CacheEvict cacheEvict = method.getAnnotation(CacheEvict.class);
+                if (cacheEvict != null) {
+                    sb.append(cacheEvict.value());
+                }
+
+                if (params != null && params.length > 0) {
+                    sb.append(":");
+                }
+                for (int index = 0, length = params.length; index < length; index++) {
+                    sb.append(params[index].toString());
+                    if (index != length - 1) {
+                        sb.append("$");
+                    }
+                }
+                return sb.toString();
+            }
+        };
     }
 }
