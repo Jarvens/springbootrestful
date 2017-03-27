@@ -12,6 +12,7 @@ import redis.clients.jedis.Transaction;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,6 +45,71 @@ public class Redis implements Serializable {
         logger.info("redis 初始化完成->");
     }
 
+    public Long ttl(final String key) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.ttl(key);
+        } finally {
+            jedis.close();
+        }
+    }
+
+    public static String setex(String key, String value, long expire, TimeUnit timeUnit) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.setex(key, (int) timeUnit.toSeconds(expire), value);
+        } finally {
+            jedis.close();
+        }
+    }
+
+    public static String hmsetex(String key, Map value, long expire, TimeUnit timeUnit) {
+        Jedis jedis = jedis();
+        try {
+            String result = jedis.hmset(key, value);
+            jedis.expire(key, (int) timeUnit.toSeconds(expire));
+            return result;
+        } finally {
+            jedis.close();
+        }
+    }
+
+    public static String set(String key, String value) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.set(key, value);
+        } finally {
+            jedis.close();
+        }
+    }
+
+    public static long incr(String key) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.incr(key);
+        } finally {
+            jedis.close();
+        }
+    }
+
+    public static long incrBy(String key, long incrBy) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.incrBy(key, incrBy);
+        } finally {
+            jedis.close();
+        }
+    }
+
+
+    public static String hmset(String key, Map value) {
+        Jedis jedis = jedis();
+        try {
+            return jedis.hmset(key, value);
+        } finally {
+            jedis.close();
+        }
+    }
 
     public static String get(String key, String defaultValue) {
         String value = get(key);
