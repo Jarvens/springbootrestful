@@ -1,6 +1,5 @@
 package com.kunlun.api;
 
-import com.kunlun.config.CacheConfigSupport;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +13,7 @@ public class IndexController {
     @ApiOperation(value = "index测试",notes = "哈哈哈")
     @RequestMapping(value = "/index",method = RequestMethod.GET)
     public String index(){
+
         return "Hello World";
     }
 }
