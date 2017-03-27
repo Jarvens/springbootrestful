@@ -59,4 +59,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         converters.add(converter);
         super.configureMessageConverters(converters);
     }
+
 }
