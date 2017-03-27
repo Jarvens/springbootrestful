@@ -24,7 +24,6 @@ import static java.util.Arrays.asList;
  * Created by kunlun on 2017/3/24.
  */
 @Configuration
-@EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);

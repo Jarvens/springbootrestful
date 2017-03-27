@@ -1,18 +1,18 @@
 package com.kunlun.api;
 
-import org.springframework.stereotype.Controller;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import java.util.Map;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kunlun on 2017/3/24.
  */
-@Controller
+@RestController
 public class IndexController {
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public String index(Map<String, Object> model) {
-        model.put("time", "这是我的第一个ftl页面");
-        return "index";
+    @ApiOperation(value = "index测试",notes = "哈哈哈")
+    @RequestMapping(value = "/index",method = RequestMethod.GET)
+    public String index(){
+        return "Hello World";
     }
 }
