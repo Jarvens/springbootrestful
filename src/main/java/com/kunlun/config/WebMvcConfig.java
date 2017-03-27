@@ -8,18 +8,19 @@ import org.n3r.diamond.sdk.domain.DiamondConf;
 import org.n3r.diamond.sdk.domain.DiamondSDKConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -31,6 +32,7 @@ import static java.util.Arrays.asList;
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
+
     /***
      * 持久化配置 diamond
      * @return
@@ -62,5 +64,57 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         super.configureMessageConverters(converters);
     }
 
+    /**
+     * Freemarker 视图配置
+     * @return
+     */
+    @Bean
+    public FreeMarkerConfigurer freeMarkerConfigurer() {
+        FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
+        freeMarkerConfigurer.setTemplateLoaderPath("classpath:/views/");
+        Properties properties = new Properties();
+        properties.setProperty("template_update_delay", "0");
+        properties.setProperty("default_encoding", "UTF-8");
+        properties.setProperty("number_format", "yyyy-MM-dd HH:mm:ss");
+        properties.setProperty("classic_compatible", "true");
+        properties.setProperty("template_exception_handler", "ignore");
+        freeMarkerConfigurer.setFreemarkerSettings(properties);
+        //Map<String,Object> variables = new HashMap<String,Object>();
+        return freeMarkerConfigurer;
 
+    }
+
+    /**
+     * Freemarker  视图解析
+     * @return
+     */
+    @Bean
+    public FreeMarkerViewResolver freeMarkerViewResolver(){
+        FreeMarkerViewResolver template = new FreeMarkerViewResolver();
+        template.setViewClass(FreeMarkerView.class);
+        template.setPrefix("");
+        template.setSuffix(".html");
+        template.setCache(true);
+        template.setContentType("text/html;charset=UTF-8");
+        template.setExposeSpringMacroHelpers(true);
+        template.setExposeRequestAttributes(true);
+        template.setExposeSessionAttributes(true);
+        template.setRequestContextAttribute("rc");
+        template.setAllowSessionOverride(true);
+        return template;
+    }
+
+
+    /**
+     * 静态资源处理
+     *
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/css/");
+        registry.addResourceHandler("/img/**").addResourceLocations("classpath:/img/");
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
+        super.addResourceHandlers(registry);
+    }
 }
