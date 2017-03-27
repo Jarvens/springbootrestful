@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HostAndPort;
 import org.n3r.diamond.client.Miner;
 import org.n3r.diamond.client.Minerable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,6 +34,7 @@ import java.lang.reflect.Method;
 @EnableCaching
 public class CacheConfigSupport extends CachingConfigurerSupport implements Serializable {
 
+    private Logger logger = LoggerFactory.getLogger(CacheConfigSupport.class);
     private static final long serialVersionUID = -4289591822539218189L;
 
     @Bean
@@ -47,6 +50,8 @@ public class CacheConfigSupport extends CachingConfigurerSupport implements Seri
         redisConnectionFactory.setPassword(config.getString("auth"));
         redisConnectionFactory.setDatabase(config.getInt("database", 1));
         redisConnectionFactory.setPoolConfig(jedisPoolConfig);
+        logger.info("初始化完成  ->");
+        System.out.println("初始化Redis完成...>");
         return redisConnectionFactory;
     }
 

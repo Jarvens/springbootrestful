@@ -1,5 +1,6 @@
 package com.kunlun.api;
 
+import com.kunlun.config.CacheConfigSupport;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

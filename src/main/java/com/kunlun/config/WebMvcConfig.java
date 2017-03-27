@@ -6,9 +6,12 @@ import org.n3r.diamond.client.Minerable;
 import org.n3r.diamond.sdk.DiamondSDK;
 import org.n3r.diamond.sdk.domain.DiamondConf;
 import org.n3r.diamond.sdk.domain.DiamondSDKConf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,10 +26,11 @@ import static java.util.Arrays.asList;
 /**
  * Created by kunlun on 2017/3/24.
  */
-@Configurable
+@Configuration
 @EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
+    private Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
     /***
      * 持久化配置 diamond
      * @return
@@ -39,6 +43,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                         minerable.getString("diamondUsername"),
                         minerable.getString("diamondPassword")))));
 
+        logger.info("持久化配置服务加载完成 ...>");
         return diamondSDK;
     }
 
